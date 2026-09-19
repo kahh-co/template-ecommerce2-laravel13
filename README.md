@@ -1,60 +1,82 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# DAILYDRINK — Project Notes
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+E-Commerce kopi & minuman kekinian (Gen Z). Dibangun sesuai `prd.md` dari project Laravel 13 yang sudah ada.
 
-## About Laravel
+## Stack
+- Laravel 13 + Blade + Tailwind CSS v4 (Vite)
+- Database: SQLite (`database/database.sqlite`)
+- Authentication: manual (login, register, logout, forgot/reset password)
+- Payment: **Mock Midtrans Snap** (struktur kompatibel untuk switch ke asli)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Akun Demo
+| Role     | Email               | Password |
+| -------- | ------------------- | -------- |
+| Admin    | admin@dailydrink.id | password |
+| Customer | demo@dailydrink.id  | password |
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Cara Menjalankan
+```powershell
+php artisan serve
+npm run dev        # opsional, hot reload frontend
+```
+Seed awal: 5 kategori + 8 produk (American, Caramel Macchiato, dll) jalan otomatis saat migrasi.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+## Struktur Utama
+```
+app/Http/Controllers/        Home, Product, Cart, Checkout, Order, Payment, Profile, Auth + Admin/*
+app/Services/MidtransService.php   service payment (mock/snap)
+app/Models/                  User, Category, Product, Cart, CartItem, Order, OrderItem
+database/migrations/         tabel e-commerce (categories, products, carts, cart_items, orders, order_items)
+resources/views/             layouts, home, shop, products, cart, checkout, orders, profile, auth, admin
+routes/web.php               semua route public/auth/admin + POST /payment/notification
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## Alur Utama
+Browse → Shop → Product Detail → Add to Cart → Checkout → Create Order → Mock Payment → Payment Notification → Order Status
 
-## Contributing
+## Alur Payment (Mock)
+1. Checkout membuat Order dengan status `pending/pending` + `snap_token` `MOCK-*`.
+2. Halaman `/checkout/pay/{order_number}` menampilkan tombol simulasi: **Berhasil / Pending / Gagal / Expired**.
+3. Hasil disimpan ke order (payment_status & order_status terpisah) seperti layaknya notification Midtrans.
+4. Endpoint nyata `POST /payment/notification` tetap tersedia & tanpa login, untuk verifikasi backend.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Switch ke Midtrans Asli
+```powershell
+composer require midtrans/midtrans-php
+```
+Lalu di `.env`:
+```env
+MIDTRANS_MODE=snap
+MIDTRANS_SERVER_KEY=isi_server_key_sandbox
+MIDTRANS_CLIENT_KEY=isi_client_key_sandbox
+MIDTRANS_IS_PRODUCTION=false
+```
+`MidtransService` sudah punya jalur `snap`, jadi route/tabel tidak perlu diubah.
 
-## Code of Conduct
+## Status
+| Payment | Pending, Paid, Failed, Expired, Cancelled |
+| ------- | ----------------------------------------- |
+| Order   | Pending, Processing, Ready, Completed, Cancelled |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Halaman & Akses
+| Halaman              | Akses   |
+| -------------------- | ------- |
+| Home, Shop, Product Detail, Login, Register | Publik |
+| Cart, Checkout, Orders, Profile | Login customer |
+| `/admin/*` (dashboard, produk, kategori, orders, customers) | Login admin |
 
-## Security Vulnerabilities
+## Fitur Lengkap (ringkas)
+- Homepage: hero "Your Daily Drink, Your Daily Mood.", kategori, best seller, promo Weekend Deal, brand section.
+- Shop: search, filter kategori, sort terbaru/best seller/termurah/termahal.
+- Product detail: qty, Add to Cart, Buy Now.
+- Cart: update qty, hapus item, subtotal.
+- Checkout: info customer + delivery + order summary (shipping flat Rp10.000).
+- Orders: riwayat + detail per order.
+- Profile: ubah nama/HP/alamat + password.
+- Admin: dashboard stats, CRUD produk (upload gambar, stok, status, best seller), CRUD kategori, kelola status order, daftar customer.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-"# template-ecommerce2-laravel13" 
-"# template-ecommerce2-laravel13" 
+## Catatan Penting
+- Payment dijamin **mock** — tidak ada transaksi uang asli.
+- Product & category image memakai placeholder Unsplash bila belum upload.
+- Server Key tidak pernah tampil di frontend.
+- Semua route admin dilindungi middleware `admin`.
