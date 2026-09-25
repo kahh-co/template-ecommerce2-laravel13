@@ -2,25 +2,25 @@
 @section('title', 'DAILYDRINK — Your Daily Drink, Your Daily Mood')
 @section('content')
 {{-- HERO --}}
-<section class="max-w-7xl mx-auto px-4 pt-10 grid md:grid-cols-2 gap-8 items-center">
+<section class="max-w-7xl mx-auto px-4 pt-6 sm:pt-10 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center">
     <div>
         <span class="inline-block text-xs font-bold bg-orange-100 text-orange-800 px-3 py-1 rounded-full">FRESH • SIMPLE • GEN Z</span>
-        <h1 class="mt-4 text-4xl md:text-5xl font-extrabold leading-tight text-[#2B1B12]">Your Daily Drink,<br>Your Daily Mood.</h1>
-        <p class="mt-4 text-stone-600">Nikmati kopi dan minuman favoritmu untuk menemani setiap aktivitas.</p>
-        <div class="mt-6 flex gap-3">
-            <a href="{{ route('shop.index') }}" class="px-6 py-3 rounded-full bg-[#2B1B12] text-white font-bold hover:bg-[#3E2A1E]">Order Now</a>
-            <a href="{{ route('shop.index', ['sort' => 'best']) }}" class="px-6 py-3 rounded-full border border-[#2B1B12] font-bold">Best Seller</a>
+        <h1 class="mt-4 text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight text-[#2B1B12]">Your Daily Drink,<br>Your Daily Mood.</h1>
+        <p class="mt-4 text-sm sm:text-base text-stone-600">Nikmati kopi dan minuman favoritmu untuk menemani setiap aktivitas.</p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+            <a href="{{ route('shop.index') }}" class="px-6 py-3 rounded-full bg-[#2B1B12] text-white font-bold hover:bg-[#3E2A1E] text-center">Order Now</a>
+            <a href="{{ route('shop.index', ['sort' => 'best']) }}" class="px-6 py-3 rounded-full border border-[#2B1B12] font-bold text-center">Best Seller</a>
         </div>
     </div>
     <div class="rounded-3xl overflow-hidden shadow-xl">
-        <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?w=900&q=80&auto=format&fit=crop" alt="Daily Drink" class="w-full h-80 object-cover">
+        <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?w=900&q=80&auto=format&fit=crop" alt="Daily Drink" class="w-full h-60 sm:h-80 object-cover">
     </div>
 </section>
 
 {{-- CATEGORY --}}
 <section class="max-w-7xl mx-auto px-4 mt-12">
     <h2 class="font-extrabold text-xl">Shop by Category</h2>
-    <div class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+    <div class="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         @foreach($categories as $c)
         <a href="{{ route('shop.index', ['category' => $c->slug]) }}" class="bg-white rounded-3xl p-5 shadow-sm border hover:shadow-md text-center">
             <div class="text-3xl">🥤</div>
@@ -37,7 +37,7 @@
         <h2 class="font-extrabold text-xl">Best Seller</h2>
         <a href="{{ route('shop.index') }}" class="text-sm font-bold text-orange-700">Lihat Semua →</a>
     </div>
-    <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="mt-4 grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4">
         @foreach($bestSellers->take(4) as $p)
             @include('components.product-card', ['p' => $p])
         @endforeach
@@ -65,7 +65,7 @@
 {{-- LATEST --}}
 <section class="max-w-7xl mx-auto px-4 mt-12">
     <h2 class="font-extrabold text-xl">Terbaru</h2>
-    <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="mt-4 grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4">
         @foreach($latest as $p)
             @include('components.product-card', ['p' => $p])
         @endforeach

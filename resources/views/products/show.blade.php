@@ -1,8 +1,8 @@
 @extends('layouts.app')
 @section('title', $product->name.' — DAILYDRINK')
 @section('content')
-<div class="max-w-6xl mx-auto px-4 py-8 grid md:grid-cols-2 gap-8">
-    <div class="rounded-3xl overflow-hidden shadow"><img src="{{ $product->image_url }}" class="w-full h-[420px] object-cover" alt="{{ $product->name }}"></div>
+<div class="max-w-6xl mx-auto px-4 py-6 sm:py-8 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+    <div class="rounded-3xl overflow-hidden shadow"><img src="{{ $product->image_url }}" class="w-full h-64 sm:h-80 md:h-[420px] object-cover" alt="{{ $product->name }}"></div>
     <div>
         <div class="text-xs font-bold text-orange-700 uppercase">{{ $product->category->name }}</div>
         <h1 class="text-3xl font-extrabold mt-1">{{ $product->name }}</h1>
@@ -27,7 +27,7 @@
 @if($related->count())
 <div class="max-w-6xl mx-auto px-4 pb-8">
     <h2 class="font-extrabold text-lg">Kamu Mungkin Suka</h2>
-    <div class="mt-3 grid grid-cols-2 md:grid-cols-4 gap-4">@foreach($related as $p)@include('components.product-card', ['p' => $p])@endforeach</div>
+    <div class="mt-3 grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4">@foreach($related as $p)@include('components.product-card', ['p' => $p])@endforeach</div>
 </div>
 @endif
 @endsection

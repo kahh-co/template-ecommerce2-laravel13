@@ -1,0 +1,8 @@
+{
+  "$schema": "https://scaffdev.vercel.app/schemas/scaff.template.json",
+  "name": "template-ecommerce2-laravel13",
+  "slug": "template-ecommerce2-laravel13",
+  "framework": "laravel",
+  "provides": {},
+  "removalGuides": {}
+}

@@ -3,7 +3,7 @@
 @section('content')
 <div class="max-w-7xl mx-auto px-4 py-8">
     <h1 class="text-2xl font-extrabold">Shop All Drinks</h1>
-    <form method="GET" class="mt-4 bg-white rounded-3xl border p-4 grid md:grid-cols-5 gap-3">
+    <form method="GET" class="mt-4 bg-white rounded-3xl border p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
         <input name="q" value="{{ request('q') }}" placeholder="Search your favorite drink..." class="md:col-span-2 px-4 py-2 rounded-full border text-sm">
         <select name="category" class="px-4 py-2 rounded-full border text-sm">
             <option value="">Semua Kategori</option>
@@ -17,7 +17,7 @@
         </select>
         <button class="px-4 py-2 rounded-full bg-[#2B1B12] text-white text-sm font-bold">Filter</button>
     </form>
-    <div class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="mt-6 grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4">
         @forelse($products as $p)
             @include('components.product-card', ['p' => $p])
         @empty
